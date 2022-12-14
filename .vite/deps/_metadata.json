@@ -1,0 +1,23 @@
+{
+  "hash": "7786621b",
+  "browserHash": "deca92a2",
+  "optimized": {
+    "kontra": {
+      "src": "../../node_modules/.deno/kontra@8.0.0/node_modules/kontra/kontra.mjs",
+      "file": "kontra.js",
+      "fileHash": "a4304b2c",
+      "needsInterop": false
+    },
+    "excalibur": {
+      "src": "../../node_modules/.deno/excalibur@0.24.5/node_modules/excalibur/dist/excalibur.min.js",
+      "file": "excalibur.js",
+      "fileHash": "6c92d425",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-RSJERJUL": {
+      "file": "chunk-RSJERJUL.js"
+    }
+  }
+}
