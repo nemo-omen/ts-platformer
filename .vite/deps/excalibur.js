@@ -1,6 +1,7 @@
-import {
-  __commonJS
-} from "./chunk-RSJERJUL.js";
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
 
 // node_modules/.deno/excalibur@0.24.5/node_modules/excalibur/dist/excalibur.min.js
 var require_excalibur_min = __commonJS({
