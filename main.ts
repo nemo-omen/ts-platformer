@@ -1,8 +1,22 @@
 import './style.css';
-import { Engine, Actor, Color, CollisionType, Input, Physics, vec, Vector } from 'https://esm.sh/excalibur@0.27.0';
+import {
+  Engine,
+  Actor,
+  Color,
+  CollisionType,
+  Input,
+  Physics,
+  vec,
+  Vector,
+  CollisionStartEvent,
+  CollisionEndEvent
+} from 'https://esm.sh/excalibur@0.27.0';
+import { KeyEvent } from 'https://esm.sh/v99/excalibur@0.27.0/build/dist/Input/Keyboard';
+
+let onFloor = false;
 
 // Physics.useRealisticPhysics();
-Physics.gravity = vec(0, 200);
+Physics.gravity = vec(0, 800);
 
 const game = new Engine({
   height: document.body.clientHeight,
@@ -19,7 +33,7 @@ const paddle = new Actor({
   color: Color.Chartreuse
 });
 
-paddle.body.collisionType = CollisionType.active;
+paddle.body.collisionType = CollisionType.Active;
 paddle.body.useGravity = true;
 
 const floor = new Actor({
@@ -28,8 +42,10 @@ const floor = new Actor({
   width: game.drawWidth,
   height: 40,
   color: Color.Gray,
-  collisionType: CollisionType.fixed,
+  collisionType: CollisionType.Fixed,
 });
+
+// floor.body.friction = 2;
 
 const wall1 = new Actor({
   x: 0,
@@ -37,7 +53,7 @@ const wall1 = new Actor({
   width: 40,
   height: game.drawHeight,
   color: Color.Gray,
-  collisionType: CollisionType.fixed,
+  collisionType: CollisionType.Fixed,
 });
 
 const wall2 = new Actor({
@@ -46,41 +62,38 @@ const wall2 = new Actor({
   width: 40,
   height: game.drawHeight,
   color: Color.Gray,
-  collisionType: CollisionType.fixed,
+  collisionType: CollisionType.Fixed,
 });
 
 // paddle.body.collisionType = CollisionType.Fixed;
 
 paddle.on('postupdate', () => {
-  //   if (game.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
-  //     if (paddle.pos.x <= game.drawWidth - paddle.width) {
-  //       // paddle.pos.x += 20;
-  //       paddle.vel.x += 20;
-  //     } else {
-  //       paddle.vel.x = 0;
-  //     }
-  //   } else if (game.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
-  //     if (paddle.pos.x >= paddle.width) {
-  //       // paddle.pos.x -= 20;
-  //       paddle.vel.x -= 20;
-  //     } else {
-  //       paddle.vel.x = 0;
-  //     }
-  //   } else {
-  //     if (paddle.vel.x <= 0) {
-  //       paddle.vel.x += 20;
-  //     }
+  if (game.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
+    paddle.vel.x += 15.0;
+  }
 
-  //     if (paddle.vel.x >= 0) {
-  //       paddle.vel.x -= 20;
-  //     }
-  //   }
+  if (game.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
+    paddle.vel.x -= 15.0;
+  }
 
-  //   if (game.input.keyboard.wasReleased(Input.Keys.ArrowLeft)) {
-  //     if (paddle.pos.x <= paddle.width / 2) {
-  //       // paddle.pos.x += 20;
-  //     }
-  //   }
+  game.input.keyboard.on('press', (event: KeyEvent) => {
+    if (event.key == 'Space') {
+      paddle.vel.y = (-700);
+    }
+  });
+
+});
+
+paddle.on('collisionstart', (event: CollisionStartEvent) => {
+  if (event.other === floor) {
+    onFloor = true;
+  }
+});
+
+paddle.on('collisionend', (event: CollisionEndEvent) => {
+  if (event.other === floor) {
+    onFloor = false;
+  }
 });
 
 game.start().then(() => {
