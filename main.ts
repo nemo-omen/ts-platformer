@@ -69,11 +69,19 @@ const wall2 = new Actor({
 
 paddle.on('postupdate', () => {
   if (game.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
-    paddle.vel.x += 15.0;
+    if (onFloor) {
+      paddle.vel.x += 10;
+    } else {
+      paddle.vel.x += 15.0;
+    }
   }
 
   if (game.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
-    paddle.vel.x -= 15.0;
+    if (onFloor) {
+      paddle.vel.x -= 10;
+    } else {
+      paddle.vel.x -= 15.0;
+    }
   }
 
   game.input.keyboard.on('press', (event: KeyEvent) => {
