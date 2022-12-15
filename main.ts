@@ -1,58 +1,78 @@
-import './style.css';
+// import './style.css';
 import {
-  Engine,
   Actor,
+  BoundingBox,
+  Camera,
   Color,
+  CollisionEndEvent,
+  CollisionStartEvent,
   CollisionType,
+  DisplayMode,
+  Engine,
   Input,
+  KeyEvent,
   Physics,
+  PostCollisionEvent,
+  Side,
   vec,
   Vector,
-  CollisionStartEvent,
-  CollisionEndEvent
 } from 'https://esm.sh/excalibur@0.27.0';
-import { KeyEvent } from 'https://esm.sh/v99/excalibur@0.27.0/build/dist/Input/Keyboard';
 
-let onFloor = false;
+import { Platform } from './actors/Platform.ts';
+import { GameActor } from './actors/GameActor.ts';
+// let onFloor = false;
 
 // Physics.useRealisticPhysics();
 Physics.gravity = vec(0, 800);
 
 const game = new Engine({
-  height: document.body.clientHeight,
-  width: document.body.clientWidth,
+  // height: 1920,
+  // width: 1920,
+  displayMode: DisplayMode.FillScreen,
   backgroundColor: Color.fromHex('#051126'),
 });
 
-const paddle = new Actor({
+
+const player = new GameActor({
   // x: game.halfDrawWidth,
   // y: game.halfDrawHeight,
+  name: 'player',
   pos: vec(game.halfDrawWidth, game.halfDrawHeight),
   width: 30,
   height: 30,
   color: Color.Chartreuse
 });
 
-paddle.body.collisionType = CollisionType.Active;
-paddle.body.useGravity = true;
+// player.onInitialize(game);
+// player.onPreUpdate(game);
 
-const floor = new Actor({
-  x: game.halfDrawWidth,
-  y: game.drawHeight,
-  width: game.drawWidth,
+// player.onPostCollision((event: PostCollisionEvent) => { });
+
+const floor = new Platform({
+  name: 'platform',
+  x: game.getWorldBounds().width / 2,
+  y: game.getWorldBounds().height,
+  width: game.getWorldBounds().width,
   height: 40,
   color: Color.Gray,
   collisionType: CollisionType.Fixed,
 });
 
-// floor.body.friction = 2;
+// const floor = new Actor({
+//   x: game.halfDrawWidth,
+//   y: game.drawHeight - 20,
+//   width: game.drawWidth,
+//   height: 40,
+//   color: Color.Gray,
+//   collisionType: CollisionType.Fixed,
+// });
 
 const wall1 = new Actor({
   x: 0,
   y: game.halfDrawHeight,
-  width: 40,
+  width: 20,
   height: game.drawHeight,
-  color: Color.Gray,
+  color: Color.Transparent,
   collisionType: CollisionType.Fixed,
 });
 
@@ -65,48 +85,29 @@ const wall2 = new Actor({
   collisionType: CollisionType.Fixed,
 });
 
-// paddle.body.collisionType = CollisionType.Fixed;
-
-paddle.on('postupdate', () => {
-  if (game.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
-    if (onFloor) {
-      paddle.vel.x += 10;
-    } else {
-      paddle.vel.x += 15.0;
-    }
-  }
-
-  if (game.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
-    if (onFloor) {
-      paddle.vel.x -= 10;
-    } else {
-      paddle.vel.x -= 15.0;
-    }
-  }
-
-  game.input.keyboard.on('press', (event: KeyEvent) => {
-    if (event.key == 'Space') {
-      paddle.vel.y = (-700);
-    }
-  });
-
+const platform1 = new Platform({
+  x: game.drawWidth - 170,
+  y: game.halfDrawHeight + 100,
+  width: 300,
+  height: 100,
+  color: Color.Gray,
+  collisionType: CollisionType.Fixed
 });
 
-paddle.on('collisionstart', (event: CollisionStartEvent) => {
-  if (event.other === floor) {
-    onFloor = true;
-  }
-});
-
-paddle.on('collisionend', (event: CollisionEndEvent) => {
-  if (event.other === floor) {
-    onFloor = false;
-  }
-});
+let boundingBox = new BoundingBox(
+  0,
+  0,
+  1920,
+  1080
+);
 
 game.start().then(() => {
-  game.add(paddle);
+  game.add(player);
   game.add(floor);
   game.add(wall1);
   game.add(wall2);
+  game.add(platform1);
+  game.currentScene.camera.zoom = 1.25;
+  game.currentScene.camera.strategy.limitCameraBounds(boundingBox);
+  game.currentScene.camera.strategy.elasticToActor(player, 0.5, 0.85);
 });
