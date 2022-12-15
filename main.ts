@@ -14,24 +14,29 @@ import {
   Physics,
   PostCollisionEvent,
   Side,
+  TileMap,
   vec,
   Vector,
 } from 'https://esm.sh/excalibur@0.27.0';
 
 import { Platform } from './actors/Platform.ts';
 import { GameActor } from './actors/GameActor.ts';
-// let onFloor = false;
 
-// Physics.useRealisticPhysics();
 Physics.gravity = vec(0, 800);
 
 const game = new Engine({
-  // height: 1920,
-  // width: 1920,
   displayMode: DisplayMode.FillScreen,
   backgroundColor: Color.fromHex('#051126'),
 });
 
+Engine.showDebug = true;
+
+const tileMap = new TileMap({
+  rows: 40,
+  columns: 40,
+  tileWidth: 32,
+  tileHeight: 32
+});
 
 const player = new GameActor({
   // x: game.halfDrawWidth,
@@ -69,25 +74,25 @@ const floor = new Platform({
 
 const wall1 = new Actor({
   x: 0,
-  y: game.halfDrawHeight,
+  y: game.getWorldBounds().height / 2,
   width: 20,
-  height: game.drawHeight,
-  color: Color.Transparent,
+  height: game.getWorldBounds().height,
+  color: Color.Gray,
   collisionType: CollisionType.Fixed,
 });
 
 const wall2 = new Actor({
   x: game.drawWidth,
-  y: game.halfDrawHeight,
+  y: game.getWorldBounds().height / 2,
   width: 40,
-  height: game.drawHeight,
+  height: game.getWorldBounds().height,
   color: Color.Gray,
   collisionType: CollisionType.Fixed,
 });
 
 const platform1 = new Platform({
-  x: game.drawWidth - 170,
-  y: game.halfDrawHeight + 100,
+  x: game.getWorldBounds().width - 200,
+  y: (game.getWorldBounds().height / 2) + 300,
   width: 300,
   height: 100,
   color: Color.Gray,
@@ -107,6 +112,7 @@ game.start().then(() => {
   game.add(wall1);
   game.add(wall2);
   game.add(platform1);
+
   game.currentScene.camera.zoom = 1.25;
   game.currentScene.camera.strategy.limitCameraBounds(boundingBox);
   game.currentScene.camera.strategy.elasticToActor(player, 0.5, 0.85);
