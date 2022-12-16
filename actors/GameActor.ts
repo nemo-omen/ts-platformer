@@ -25,19 +25,24 @@ class GameActor extends Actor {
 
    onInitialize(engine: Engine) {
       super.onInitialize(engine);
-      super.body.collisionType = CollisionType.Active;
-      super.body.useGravity = true;
+      this.body.collisionType = CollisionType.Active;
+      this.body.useGravity = true;
    }
 
    public onPreUpdate(engine: Engine) {
-      super.vel.x = 0;
+      const isMoving = (engine.input.keyboard.isHeld(Input.Keys.ArrowRight) || engine.input.keyboard.isHeld(Input.Keys.ArrowLeft));
+      if (!isMoving) {
+         this.vel.x = 0;
+      }
+   }
 
+   public onPostUpdate(engine: Engine, delta: number): void {
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
-         super.vel.x = 400;
+         this.vel.x = 400;
       }
 
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
-         super.vel.x = -400;
+         this.vel.x = -400;
       }
 
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowDown)) {
@@ -49,22 +54,7 @@ class GameActor extends Actor {
             super.vel.y = (-800);
          }
       }
-
-      // const accel = super.acc.y;
-      // console.log(accel);
-
-      // if (super.acc.y < 0) {
-      //    this.isFalling = true;
-      // } else {
-      //    this.isFalling = false;
-      // }
-      // console.log('falling: ', this.isFalling);
    }
-
-   // public onPostUpdate(_engine: Engine, _delta: number): void {
-   //    // console.log('world to screen: ', _engine.worldToScreenCoordinates(this.pos));
-   //    // console.log('screen to world: ', _engine.screenToWorldCoordinates(this.pos));
-   // }
 
    public onPostCollision(event: PostCollisionEvent) {
       // super.onPostCollision(event);

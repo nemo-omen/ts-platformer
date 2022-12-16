@@ -65,12 +65,12 @@ bgImage.load().then(() => {
 
 // Engine.showDebug = true;
 
-const tileMap = new TileMap({
-  rows: 60,
-  columns: 60,
-  tileWidth: 32,
-  tileHeight: 32
-});
+// const tileMap = new TileMap({
+//   rows: 60,
+//   columns: 60,
+//   tileWidth: 32,
+//   tileHeight: 32
+// });
 
 const player = new GameActor({
   // x: game.halfDrawWidth,
@@ -82,11 +82,6 @@ const player = new GameActor({
   color: Color.Chartreuse
 });
 
-// player.onInitialize(game);
-// player.onPreUpdate(game);
-
-// player.onPostCollision((event: PostCollisionEvent) => { });
-
 const floor = new Platform({
   name: 'platform',
   x: bgActor.width / 2,
@@ -96,15 +91,6 @@ const floor = new Platform({
   color: Color.Gray,
   collisionType: CollisionType.Fixed,
 });
-
-// const floor = new Actor({
-//   x: game.halfDrawWidth,
-//   y: game.drawHeight - 20,
-//   width: game.drawWidth,
-//   height: 40,
-//   color: Color.Gray,
-//   collisionType: CollisionType.Fixed,
-// });
 
 const wall1 = new Actor({
   x: 0,
@@ -150,5 +136,5 @@ game.start().then(() => {
   game.add(platform1);
   game.currentScene.camera.zoom = 1.5;
   game.currentScene.camera.strategy.limitCameraBounds(boundingBox);
-  game.currentScene.camera.strategy.elasticToActor(player, 0.5, 0.85);
+  game.currentScene.camera.strategy.elasticToActor(player, 0.5, 0.75);
 });
