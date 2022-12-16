@@ -60,7 +60,7 @@ const bgActor = new Actor({
 
 bgImage.load().then(() => {
   bgActor.graphics.use(bgImage.toSprite());
-  bgActor.addComponent(new ParallaxComponent(vec(0.5, 0.5)));
+  bgActor.addComponent(new ParallaxComponent(vec(0.25, 0.25)));
 });
 
 // Engine.showDebug = true;
