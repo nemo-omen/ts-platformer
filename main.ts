@@ -9,11 +9,14 @@ import {
   CollisionType,
   DisplayMode,
   Engine,
+  ImageSource,
   Input,
   KeyEvent,
+  ParallaxComponent,
   Physics,
   PostCollisionEvent,
   Side,
+  Sprite,
   TileMap,
   vec,
   Vector,
@@ -22,18 +25,49 @@ import {
 import { Platform } from './actors/Platform.ts';
 import { GameActor } from './actors/GameActor.ts';
 
-Physics.gravity = vec(0, 800);
+// bgActor.on('initialize', (event) => {
+//   bgActor.graphics.use(bgSprite);
+//   console.log(bgImage);
+// });
+
+// bgActor.graphics.use(bgImage.toSprite());
+Physics.gravity = vec(0, 1000);
 
 const game = new Engine({
   displayMode: DisplayMode.FillScreen,
+  width: 4096,
+  height: 2417,
   backgroundColor: Color.fromHex('#051126'),
 });
 
-Engine.showDebug = true;
+const bgImage = new ImageSource('./public/webb.jpg');
+
+const bgSprite = new Sprite({
+  image: bgImage,
+  sourceView: {
+    x: 0,
+    y: 0,
+    width: 4096,
+    height: 2417
+  }
+});
+
+const bgActor = new Actor({
+  pos: vec(0, 0),
+  width: bgSprite.width,
+  height: bgSprite.height
+});
+
+bgImage.load().then(() => {
+  bgActor.graphics.use(bgImage.toSprite());
+  bgActor.addComponent(new ParallaxComponent(vec(0.5, 0.5)));
+});
+
+// Engine.showDebug = true;
 
 const tileMap = new TileMap({
-  rows: 40,
-  columns: 40,
+  rows: 60,
+  columns: 60,
   tileWidth: 32,
   tileHeight: 32
 });
@@ -55,9 +89,9 @@ const player = new GameActor({
 
 const floor = new Platform({
   name: 'platform',
-  x: game.getWorldBounds().width / 2,
-  y: game.getWorldBounds().height,
-  width: game.getWorldBounds().width,
+  x: bgActor.width / 2,
+  y: bgActor.height - 600,
+  width: bgActor.width,
   height: 40,
   color: Color.Gray,
   collisionType: CollisionType.Fixed,
@@ -74,46 +108,47 @@ const floor = new Platform({
 
 const wall1 = new Actor({
   x: 0,
-  y: game.getWorldBounds().height / 2,
+  y: bgActor.height / 2,
   width: 20,
-  height: game.getWorldBounds().height,
-  color: Color.Gray,
+  height: bgActor.height,
+  color: Color.Transparent,
   collisionType: CollisionType.Fixed,
 });
 
 const wall2 = new Actor({
-  x: game.drawWidth,
-  y: game.getWorldBounds().height / 2,
+  x: bgActor.width - 600,
+  y: bgActor.height / 2,
   width: 40,
-  height: game.getWorldBounds().height,
-  color: Color.Gray,
+  height: bgActor.height,
+  color: Color.Transparent,
   collisionType: CollisionType.Fixed,
 });
 
 const platform1 = new Platform({
-  x: game.getWorldBounds().width - 200,
-  y: (game.getWorldBounds().height / 2) + 300,
+  name: 'platform',
+  x: bgActor.width - 770,
+  y: bgActor.height - 700,
   width: 300,
-  height: 100,
+  height: 300,
   color: Color.Gray,
   collisionType: CollisionType.Fixed
 });
 
 let boundingBox = new BoundingBox(
   0,
-  0,
-  1920,
-  1080
+  600,
+  bgActor.width - 600,
+  bgActor.height - 600,
 );
 
 game.start().then(() => {
+  game.add(bgActor);
   game.add(player);
   game.add(floor);
   game.add(wall1);
   game.add(wall2);
   game.add(platform1);
-
-  game.currentScene.camera.zoom = 1.25;
+  game.currentScene.camera.zoom = 1.5;
   game.currentScene.camera.strategy.limitCameraBounds(boundingBox);
   game.currentScene.camera.strategy.elasticToActor(player, 0.5, 0.85);
 });

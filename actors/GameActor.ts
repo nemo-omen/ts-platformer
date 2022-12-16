@@ -8,7 +8,8 @@ import {
    Engine,
    Input,
    PostCollisionEvent,
-   Side
+   Side,
+   Sprite
 } from "https://esm.sh/v99/excalibur@0.27.0";
 
 import { Platform } from './Platform.ts';
@@ -32,11 +33,11 @@ class GameActor extends Actor {
       super.vel.x = 0;
 
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowRight)) {
-         super.vel.x = 500;
+         super.vel.x = 400;
       }
 
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowLeft)) {
-         super.vel.x = -500;
+         super.vel.x = -400;
       }
 
       if (engine.input.keyboard.isHeld(Input.Keys.ArrowDown)) {
